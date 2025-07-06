@@ -117,4 +117,12 @@ flowchart TD
 
 ---
 
+## 📍 How to Run
 
+```python
+# After executing all model logic
+pw.run()
+
+```
+
+---
