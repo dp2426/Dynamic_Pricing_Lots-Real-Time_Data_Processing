@@ -22,10 +22,11 @@ To build a real-time intelligent pricing engine for 14 urban parking lots that:
 
 > A simple model based on real-time occupancy levels.
 
-**Formula:**
-\[
-\text{Price}_t = \text{BasePrice} + \alpha \cdot \min\left( \frac{\text{Occupancy}}{\text{Capacity}}, 1 \right)
-\]
+**Formula (Readable):**  
+`Price_t = BasePrice + α × min(Occupancy / Capacity, 1)`
+
+**Rendered Formula:**  
+![Model 1](https://latex.codecogs.com/png.image?%5Cdpi%7B150%7D%20Price_t%3DBasePrice%2B%5Calpha%5Ccdot%20%5Cmin%5Cleft(%5Cfrac%7BOccupancy%7D%7BCapacity%7D%2C1%5Cright))
 
 - Base price: $10  
 - α (alpha): scaling constant (e.g. 5)  
@@ -38,19 +39,17 @@ To build a real-time intelligent pricing engine for 14 urban parking lots that:
 
 > Considers multiple real-world features influencing demand.
 
-**Demand Function:**
-\[
-D = \alpha \cdot \left(\frac{\text{Occupancy}}{\text{Capacity}}\right) + \beta \cdot \text{QueueLength} - \gamma \cdot \text{TrafficLevel} + \delta \cdot \text{SpecialDay} + \epsilon \cdot \text{VehicleTypeWeight}
-\]
+**Demand Function (Readable):**  
+`D = α × (Occupancy / Capacity) + β × QueueLength - γ × TrafficLevel + δ × SpecialDay + ε × VehicleTypeWeight`
 
-**Pricing Rule:**
-\[
-\text{Price}_t = \text{BasePrice} \cdot (1 + \lambda \cdot \text{NormalizedDemand})
-\]
+**Rendered Formula:**  
+![Demand Function](https://latex.codecogs.com/png.image?%5Cdpi%7B150%7D%20D%20%3D%20%5Calpha%20%5Ccdot%20%5Cleft(%5Cfrac%7BOccupancy%7D%7BCapacity%7D%5Cright)%20%2B%20%5Cbeta%20%5Ccdot%20QueueLength%20-%20%5Cgamma%20%5Ccdot%20TrafficLevel%20%2B%20%5Cdelta%20%5Ccdot%20SpecialDay%20%2B%20%5Cepsilon%20%5Ccdot%20VehicleTypeWeight)
 
-- Demand is normalized in range [-1, 1]
-- λ (lambda): amplification factor
-- Final price bounded within `[Base × 0.5, Base × 2]`
+**Pricing Rule (Readable):**  
+`Price_t = BasePrice × (1 + λ × NormalizedDemand)`
+
+**Rendered Formula:**  
+![Pricing Rule](https://latex.codecogs.com/png.image?%5Cdpi%7B150%7D%20Price_t%3DBasePrice%20%5Ccdot%20%281%20%2B%20%5Clambda%20%5Ccdot%20NormalizedDemand%29)
 
 ---
 
@@ -58,15 +57,8 @@ D = \alpha \cdot \left(\frac{\text{Occupancy}}{\text{Capacity}}\right) + \beta \
 
 > Introduces **location awareness** and **rerouting logic**.
 
-**Logic:**
-- Compute distance between lots using Haversine formula
-- If a lot is full but nearby lots are cheaper and not full → reroute
-- If nearby lots are costlier → increase price slightly
-
-**Formula (Conceptual):**
-\[
-\text{Price}_t = f(\text{OwnDemand}, \text{CompetitorPrices}, \text{Proximity})
-\]
+**Conceptual Rule:**  
+`Price_t = f(OwnDemand, CompetitorPrices, Proximity)`
 
 ---
 
@@ -118,28 +110,11 @@ flowchart TD
 
 ## ✅ Output Example
 
-| Time          | SystemCodeNumber | Price ($) |
-|---------------|------------------|-----------|
-| 2025-07-01 08:00 | BHMBCCMKT01      | 12.50     |
-| 2025-07-01 08:30 | BHMBCCMKT01      | 13.10     |
+| Time              | SystemCodeNumber | Price ($) |
+|-------------------|------------------|-----------|
+| 2025-07-01 08:00  | BHMBCCMKT01      | 12.50     |
+| 2025-07-01 08:30  | BHMBCCMKT01      | 13.10     |
 
 ---
 
-## 📍 How to Run
 
-```python
-# After executing all model logic
-pw.run()
-
-# Then fetch and plot
-output_df = result.head(1000)
-plot_snapshot(output_df.to_dict('records'))
-```
-
----
-
-## 📚 Future Enhancements
-
-- Model 2 parameter tuning (based on actual demand curves)
-- Model 3: Fully integrated rerouting logic and competitor pricing
-- Live deployment via `Panel` + `ngrok` or `FastAPI`
